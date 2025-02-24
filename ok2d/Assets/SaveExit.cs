@@ -4,18 +4,50 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
-public class ButtonController : MonoBehaviour
+public class SaveExit : MonoBehaviour
 {
     Button button;
     
     void Start()
     {
-        button = GetComponent<Button>();
-        button.onClick.AddListener(Save);
+        // button = GetComponent<Button>();
+        // button.onClick.AddListener(OnSave);
     }
 
-    void Save()
+    private string path = "save_temp/panel_data";
+
+    public void OnLoad()
+    {
+        Debug.Log("Load hoge");
+        if (File.Exists(path))
+        {
+            // バイナリ形式でデシリアライズ
+            BinaryFormatter bf = new BinaryFormatter();
+            // 指定したパスのファイルストリームを開く
+            FileStream file = File.Open(path, FileMode.Open);
+            try 
+            {
+                // 指定したファイルストリームをオブジェクトにデシリアライズ。
+                PanelData p = (PanelData)bf.Deserialize(file);
+                Debug.Log(p.color);
+            }
+            finally 
+            {
+                // ファイル操作には明示的な破棄が必要です。Closeを忘れないように。
+                if (file != null) 
+                    file.Close();
+            }
+        }
+        else
+        {
+            Debug.Log("no load file");
+        }
+    }
+
+    public void OnSave()
     {
         GameObject editScreen = GameObject.Find("editScreen");
         RectTransform con = editScreen.transform.GetComponentsInChildren<RectTransform>(true).Where((_ => _.name == "Content")).FirstOrDefault();
@@ -25,6 +57,24 @@ public class ButtonController : MonoBehaviour
         {
             var rect = children[i].GetComponent<RectTransform>();
             Debug.Log(children[i].name+","+rect.position);
+        }
+
+        PanelData p = new PanelData();
+        p.name = "hoge";
+        p.age = 10;;
+        p.color = "red";
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Create(path);
+        try
+        {
+            // 指定したオブジェクトを上で作成したストリームにシリアル化する
+            bf.Serialize(file, p);
+        }
+        finally
+        {
+            // ファイル操作には明示的な破棄が必要です。Closeを忘れないように。
+            if (file != null) 
+                file.Close();
         }
     }
 
