@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class baecon : MonoBehaviour
+public class basecon : MonoBehaviour
 {
     public bool up = true;
     public bool down = true;
@@ -22,7 +22,7 @@ public class baecon : MonoBehaviour
         
     }
 
-    void OnValidate()
+    public void OnValidate()
     {
         GameObject obj = transform.Find("up").gameObject;
         obj.SetActive(up);

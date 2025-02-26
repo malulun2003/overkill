@@ -16,7 +16,7 @@ public class ObjDrag : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragH
     // ドラッグ開始時の処理
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("OnBegingDrag");
+        // Debug.Log("OnBegingDrag");
 
         // オブジェクトを複製する
         dragobj = Instantiate(gameObject, editScreen.GetComponent<RectTransform>());
@@ -60,6 +60,6 @@ public class ObjDrag : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragH
                 con.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Abs(dragobj.GetComponent<RectTransform>().localPosition.y) + objsize.y*2);
             }
         }
-        Debug.Log("OnEndDrag");
+        // Debug.Log("OnEndDrag");
     }
 }
