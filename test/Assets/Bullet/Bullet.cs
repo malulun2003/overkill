@@ -23,13 +23,13 @@ public class Bullet : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Block")) //タグがBlockのオブジェクトと衝突した場合
         {
-            Debug.Log("Block Hit");
+            // Debug.Log("Block Hit");
             Destroy(this.gameObject); //弾を消す
         }
 
         if (collision.gameObject.CompareTag("Player")) //タグがEnemyのオブジェクトと衝突した場合
         {
-            Debug.Log("Player Hit");
+            // Debug.Log("Player Hit");
             // Destroy(collision.gameObject); //衝突した相手を消す
             // Destroy(this.gameObject); //弾を消す
         }

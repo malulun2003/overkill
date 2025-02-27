@@ -27,9 +27,9 @@ namespace UnityChan
 
 		// 以下キャラクターコントローラ用パラメタ
 		// 前進速度
-		public float forwardSpeed = 1.0f;
+		public float forwardSpeed = 0.5f;
 		// 後退速度
-		public float backwardSpeed = 1.0f;
+		public float backwardSpeed = 0.5f;
 		// 旋回速度
 		public float rotateSpeed = 1.0f;
 		// ジャンプ威力
@@ -196,16 +196,16 @@ namespace UnityChan
 			}
 		}
 
-		void OnGUI ()
-		{
-			GUI.Box (new Rect (Screen.width - 260, 10, 250, 150), "Interaction");
-			GUI.Label (new Rect (Screen.width - 245, 30, 250, 30), "Up/Down Arrow : Go Forwald/Go Back");
-			GUI.Label (new Rect (Screen.width - 245, 50, 250, 30), "Left/Right Arrow : Turn Left/Turn Right");
-			GUI.Label (new Rect (Screen.width - 245, 70, 250, 30), "Hit Space key while Running : Jump");
-			GUI.Label (new Rect (Screen.width - 245, 90, 250, 30), "Hit Spase key while Stopping : Rest");
-			GUI.Label (new Rect (Screen.width - 245, 110, 250, 30), "Left Control : Front Camera");
-			GUI.Label (new Rect (Screen.width - 245, 130, 250, 30), "Alt : LookAt Camera");
-		}
+		// void OnGUI ()
+		// {
+		// 	GUI.Box (new Rect (Screen.width - 260, 10, 250, 150), "Interaction");
+		// 	GUI.Label (new Rect (Screen.width - 245, 30, 250, 30), "Up/Down Arrow : Go Forwald/Go Back");
+		// 	GUI.Label (new Rect (Screen.width - 245, 50, 250, 30), "Left/Right Arrow : Turn Left/Turn Right");
+		// 	GUI.Label (new Rect (Screen.width - 245, 70, 250, 30), "Hit Space key while Running : Jump");
+		// 	GUI.Label (new Rect (Screen.width - 245, 90, 250, 30), "Hit Spase key while Stopping : Rest");
+		// 	GUI.Label (new Rect (Screen.width - 245, 110, 250, 30), "Left Control : Front Camera");
+		// 	GUI.Label (new Rect (Screen.width - 245, 130, 250, 30), "Alt : LookAt Camera");
+		// }
 
 
 		// キャラクターのコライダーサイズのリセット関数
@@ -216,8 +216,9 @@ namespace UnityChan
 			col.center = orgVectColCenter;
 		}
 
-		public void orderExec(string order, GameObject[] players)
+		public float orderExec(string order, int param, GameObject[] players)
 		{
+			float elapsedTime = 0f;
 			foreach (GameObject p in players)
             {
                 // 自分の場合
@@ -233,39 +234,53 @@ namespace UnityChan
                 // Debug.Log("DIS) "+dis);
             }
 
-			// Debug.Log(order);
-			if (order == "forward")
+			Debug.Log(order+", "+param);
+			if (order == "start")
 			{
-				order_v = 1;
+				elapsedTime = 0f;
+			}
+			else if (order == "end")
+			{
+				elapsedTime = 0f;
+			}
+			else if (order == "forward" || order == "move")
+			{
+				if (param < 0)
+				{
+					order_v = -1;
+				} else
+				{
+					order_v = 1;
+				}
 				order_h = 0;
+				elapsedTime = Mathf.Abs(param);
 			}
-			else if (order == "backward")
+			else if (order == "rotation")
 			{
-				order_v = -1;
-				order_h = 0;
-			}
-			else if (order == "left")
-			{
+				if (param < 0)
+				{
+					order_h = -1;
+				} else
+				{
+					order_h = 1;
+				}
 				order_v = 0;
-				order_h = 1;
-			}
-			else if (order == "right")
-			{
-				order_v = 0;
-				order_h = -1;
+				elapsedTime = Mathf.Abs(param);
 			}
 			else if (order == "search")
 			{
-				Debug.Log("search");
+				// Debug.Log("search");
 			}
 			else if (order == "shot")
 			{
-				Debug.Log("shot?");
+				// Debug.Log("shot?");
 				GameObject newbullet = Instantiate(bulletPrefab, this.transform.position+this.transform.up+this.transform.forward/2, Quaternion.identity); //弾を生成
     		    Rigidbody bulletRigidbody = newbullet.GetComponent<Rigidbody>();
 				bulletRigidbody.AddForce(this.transform.forward * bulletSpeed); //キャラクターが向いている方向に弾に力を加える
 				Destroy(newbullet, 10); //10秒後に弾を消す
+				elapsedTime = 0.5f;
 			}
+			return elapsedTime;
 		}
 	}
 }
