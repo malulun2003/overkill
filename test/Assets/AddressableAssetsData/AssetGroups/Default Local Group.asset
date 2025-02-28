@@ -16,12 +16,7 @@ MonoBehaviour:
   m_GUID: b9acfa19a1b2ab9469ea120f71240a32
   m_SerializeEntries:
   - m_GUID: e201f2081ac51e24bae2a48c1fec2743
-    m_Address: Assets/basecon.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ff7837af9c17c424abdd3b9e018167a5
-    m_Address: Assets/chip-bg.png
+    m_Address: Assets/BaseCon.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -216,8 +216,14 @@ namespace UnityChan
 			col.center = orgVectColCenter;
 		}
 
-		public float orderExec(string order, int param, GameObject[] players)
+		private float enemy_distance = 0f;
+		private float enemy_angle = 0f;
+
+		int target_lockon = 0;
+
+		public (float, int) orderExec(string order, int param, GameObject[] players)
 		{
+			int res = 0;
 			float elapsedTime = 0f;
 			foreach (GameObject p in players)
             {
@@ -230,11 +236,14 @@ namespace UnityChan
 	 	       	Vector3 targetPos = p.transform.position;
     	    	Vector3 playerPos = player.transform.position;
 		        /* ターゲットとプレイヤーの距離を取得 */
-        		float dis = Vector3.Distance(targetPos, playerPos);
-                // Debug.Log("DIS) "+dis);
+        		enemy_distance = Vector3.Distance(targetPos, playerPos);
+                // Debug.Log("DIS) "+p.name+" > "+enemy_distance);
+				/* ターゲットとプレイヤーの相対角度を計算する */
+				enemy_angle = Vector3.Angle(targetPos - playerPos, player.transform.forward);
+				// Debug.Log("ANGLE) "+p.name+" > "+enemy_angle);
             }
 
-			Debug.Log(order+", "+param);
+			// Debug.Log(order+", "+param);
 			if (order == "start")
 			{
 				elapsedTime = 0f;
@@ -269,7 +278,14 @@ namespace UnityChan
 			}
 			else if (order == "search")
 			{
-				// Debug.Log("search");
+				Debug.Log("search) dist="+enemy_distance+", angle="+enemy_angle);
+				if (enemy_distance < param && enemy_angle < 60) {
+					elapsedTime = 0f;
+					target_lockon = 1;
+					res = 1;
+				}
+				order_v = 0;
+				order_h = 0;
 			}
 			else if (order == "shot")
 			{
@@ -278,9 +294,11 @@ namespace UnityChan
     		    Rigidbody bulletRigidbody = newbullet.GetComponent<Rigidbody>();
 				bulletRigidbody.AddForce(this.transform.forward * bulletSpeed); //キャラクターが向いている方向に弾に力を加える
 				Destroy(newbullet, 10); //10秒後に弾を消す
-				elapsedTime = 0.5f;
+				elapsedTime = 1f;
+				order_v = 0;
+				order_h = 0;
 			}
-			return elapsedTime;
+			return (elapsedTime, res);
 		}
 	}
 }

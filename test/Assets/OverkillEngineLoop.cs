@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using System.Runtime.Serialization;
 
 namespace UnityChan
 {
@@ -8,9 +9,6 @@ namespace UnityChan
     {
         private float _repeatSpan;    //繰り返す間隔
         private float _timeElapsed;   //経過時間
-
-        private string[] order = {"shot", "search", "backward", "left", "search", "right"};
-        // private string[] order = {"shot"};
         private int order_count = 0;
 
         private GameObject player;
@@ -20,6 +18,8 @@ namespace UnityChan
         private const string path = "save_temp/";
 
         Panels p = null;
+
+        int target_lockon = 0;
 
         public void OnLoadPanel()
         {
@@ -98,38 +98,67 @@ namespace UnityChan
                     order_count = 0;
                     return;
                 }
-                _repeatSpan = chan.orderExec(pd.name, pd.param, players);
-                Debug.Log("span>>"+_repeatSpan);
+                int ifcon;
+                Debug.Log(player.name+"> order>>"+pd.name+", "+pd.param);
+                (_repeatSpan, ifcon) = chan.orderExec(pd.name, pd.param, players);
+                Debug.Log(player.name+"> span>>"+_repeatSpan+", if="+ifcon+", ("+pd.next+", "+pd.ifroute);
                 // 矢印の方向決め
-                if (pd.dir[(int)OKdir.up]) {
-                    order_count -= 16;
-                }
-                else if (pd.dir[(int)OKdir.down]) {
-                    order_count += 16;
-                }
-                else if (pd.dir[(int)OKdir.right]) {
-                    order_count += 1;
-                }
-                else if (pd.dir[(int)OKdir.left]) {
-                    order_count -= 1;
-                }
-                else if (pd.dir[(int)OKdir.up_right]) {
-                    order_count -= 15;
-                }
-                else if (pd.dir[(int)OKdir.up_left]) {
-                    order_count -= 17;
-                }
-                else if (pd.dir[(int)OKdir.down_right]) {
-                    order_count += 17;
-                }
-                else if (pd.dir[(int)OKdir.down_left]) {
-                    order_count += 15;
+                if (ifcon == 0) {
+                    if (pd.next == 0) {
+                        order_count -= 16;
+                    }
+                    else if (pd.next == 1) {
+                        order_count -= 15;
+                    }
+                    else if (pd.next == 2) {
+                        order_count += 1;
+                    }
+                    else if (pd.next == 3) {
+                        order_count += 17;
+                    }
+                    else if (pd.next == 4) {
+                        order_count += 16;
+                    }
+                    else if (pd.next == 5) {
+                        order_count += 15;
+                    }
+                    else if (pd.next == 6) {
+                        order_count -= 1;
+                    }
+                    else if (pd.next == 7) {
+                        order_count -= 17;
+                    }
+                } else if (ifcon == 1) {
+                    if (pd.ifroute == 0) {
+                        order_count -= 16;
+                    }
+                    else if (pd.ifroute == 1) {
+                        order_count -= 15;
+                    }
+                    else if (pd.ifroute == 2) {
+                        order_count += 1;
+                    }
+                    else if (pd.ifroute == 3) {
+                        order_count += 17;
+                    }
+                    else if (pd.ifroute == 4) {
+                        order_count += 16;
+                    }
+                    else if (pd.ifroute == 5) {
+                        order_count += 15;
+                    }
+                    else if (pd.ifroute == 6) {
+                        order_count -= 1;
+                    }
+                    else if (pd.ifroute == 7) {
+                        order_count -= 17;
+                    }                    
                 }
                 if (pd.name == "end")
                 {
                     order_count = 0;
                 }
-                Debug.Log("order_count)"+order_count);
+                // Debug.Log("order_count)"+order_count);
                 _timeElapsed = 0;   //経過時間をリセットする
             }
         }
