@@ -68,6 +68,9 @@ namespace UnityChan
             _repeatSpan = 0;    //実行間隔を設定(second)
             _timeElapsed = 0;   //経過時間をリセット
             // Debug.Log(player.tag);
+
+            // SphereColider の　Radius を変える
+            this.transform.Find("sight").GetComponent<SphereCollider>().radius = 4f;
         }
 
         // Update is called once per frame
@@ -78,6 +81,8 @@ namespace UnityChan
             //各プレイヤーの状態を取得する
             // players = GameObject.FindWithTag("Player");
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            var own = this.gameObject;
+
             foreach (GameObject p in players)
             {
                 // 自分の場合
@@ -100,7 +105,7 @@ namespace UnityChan
                 }
                 int ifcon;
                 Debug.Log(player.name+"> order>>"+pd.name+", "+pd.param);
-                (_repeatSpan, ifcon) = chan.orderExec(pd.name, pd.param, players);
+                (_repeatSpan, ifcon) = chan.orderExec(pd.name, pd.param, players, own);
                 Debug.Log(player.name+"> span>>"+_repeatSpan+", if="+ifcon+", ("+pd.next+", "+pd.ifroute);
                 // 矢印の方向決め
                 if (ifcon == 0) {

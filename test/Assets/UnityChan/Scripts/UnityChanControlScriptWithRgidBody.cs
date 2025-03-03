@@ -45,11 +45,13 @@ namespace UnityChan
 		private Animator anim;							// キャラにアタッチされるアニメーターへの参照
 		private AnimatorStateInfo currentBaseState;			// base layerで使われる、アニメーターの現在の状態の参照
 
-		private GameObject player;
+		// private GameObject player;
 		private GameObject cameraObject;	// メインカメラへの参照
 
-		private float order_v = 0;
-		private float order_h= 0;
+		private float order_v = 0f;
+		private float order_h= 0f;
+
+		private float elapsedAngle = -1f;
 		
 		// アニメーター各ステートへの参照
 		static int idleState = Animator.StringToHash ("Base Layer.Idle");
@@ -60,7 +62,7 @@ namespace UnityChan
 		// 初期化
 		void Start ()
 		{
-			player = this.gameObject;
+			// player = this.gameObject;
 			// Animatorコンポーネントを取得する
 			anim = GetComponent<Animator> ();
 			// CapsuleColliderコンポーネントを取得する（カプセル型コリジョン）
@@ -125,8 +127,15 @@ namespace UnityChan
 			transform.localPosition += velocity * Time.fixedDeltaTime;
 
 			// 左右のキー入力でキャラクタをY軸で旋回させる
-			transform.Rotate (0, h * rotateSpeed, 0);	
-	
+			transform.Rotate (0, h * rotateSpeed, 0);
+			// 設定角度分旋回したかを計算する
+			if (Mathf.Abs(elapsedAngle) > 0 && elapsedAngle != -1)
+			{
+				elapsedAngle -= Mathf.Abs(h * rotateSpeed);
+				if (elapsedAngle < 0) {
+					elapsedAngle = 0;
+				}
+			}	
 
 			// 以下、Animatorの各ステート中での処理
 			// Locomotion中
@@ -217,31 +226,41 @@ namespace UnityChan
 		}
 
 		private float enemy_distance = 0f;
-		private float enemy_angle = 0f;
+		private float enemy_relative_angle = 0f;
+		private bool enemy_flag = false;
 
 		int target_lockon = 0;
 
-		public (float, int) orderExec(string order, int param, GameObject[] players)
+		public (float, int) orderExec(string order, int param, GameObject[] players, GameObject player)
 		{
 			int res = 0;
 			float elapsedTime = 0f;
-			foreach (GameObject p in players)
-            {
-                // 自分の場合
-                if (p == player)
-                {
-                    continue;
-                }
-                // Debug.Log("2) "+p.name+" "+player.name);
-	 	       	Vector3 targetPos = p.transform.position;
-    	    	Vector3 playerPos = player.transform.position;
-		        /* ターゲットとプレイヤーの距離を取得 */
-        		enemy_distance = Vector3.Distance(targetPos, playerPos);
-                // Debug.Log("DIS) "+p.name+" > "+enemy_distance);
-				/* ターゲットとプレイヤーの相対角度を計算する */
-				enemy_angle = Vector3.Angle(targetPos - playerPos, player.transform.forward);
-				// Debug.Log("ANGLE) "+p.name+" > "+enemy_angle);
-            }
+
+			// foreach (GameObject p in players)
+            // {
+            //     // 自分の場合
+            //     if (p == player)
+            //     {
+            //         continue;
+            //     }
+            //     // Debug.Log("2) "+p.name+" "+player.name);
+	 	    //    	Vector3 targetPos = p.transform.position;
+    	    // 	Vector3 playerPos = player.transform.position;
+		    //     /* ターゲットとプレイヤーの距離を取得 */
+        	// 	enemy_distance = Vector3.Distance(targetPos, playerPos);
+            //     // Debug.Log("DIS) "+p.name+" > "+enemy_distance);
+			// 	/* ターゲットとプレイヤーの相対角度を計算する */
+			// 	enemy_relative_angle = Vector3.Angle(targetPos - playerPos, player.transform.forward);
+			// 	// Debug.Log("ANGLE) "+p.name+" > "+enemy_relative_angle);
+            // }
+
+			enemy_distance = this.transform.Find("sight").GetComponent<FunSearch>().enemy_distance;
+			enemy_relative_angle = this.transform.Find("sight").GetComponent<FunSearch>().enemy_angle;
+			enemy_flag = this.transform.Find("sight").GetComponent<FunSearch>().found;
+
+			if (!this.transform.Find("sight").GetComponent<FunSearch>().found) {
+				target_lockon = 0;
+			}
 
 			// Debug.Log(order+", "+param);
 			if (order == "start")
@@ -276,14 +295,50 @@ namespace UnityChan
 				order_v = 0;
 				elapsedTime = Mathf.Abs(param);
 			}
+			else if (order == "rot_enemy")
+			{
+				// Debug.Log("rot_enemy) dist="+enemy_distance+", angle="+enemy_relative_angle+", "+target_lockon+", "+elapsedAngle);
+				if (target_lockon == 1 && elapsedAngle < 0)
+				{
+					// ターゲットの方向に回転する
+					// Debug.Log("rot_enemy2) dist="+enemy_distance+", angle="+enemy_relative_angle);
+					if (enemy_relative_angle < 0) {
+						order_h = -1;
+					} else {
+						order_h = 1;
+					}
+					elapsedTime = 0f;
+					elapsedAngle = Mathf.Abs(enemy_relative_angle);
+					res = -1;
+				} else if (target_lockon == 0) {
+					res = 0;
+				} else if (elapsedAngle > 0) {
+					res = -1;
+				} else if (elapsedAngle == 0) {
+					res = 0;
+					elapsedAngle = -1f;
+				}
+			}
 			else if (order == "search")
 			{
-				Debug.Log("search) dist="+enemy_distance+", angle="+enemy_angle);
-				if (enemy_distance < param && enemy_angle < 60) {
+				// Debug.Log("search) dist="+enemy_distance+", angle="+enemy_relative_angle+", "+enemy_flag);
+				if (enemy_flag) {
 					elapsedTime = 0f;
-					target_lockon = 1;
 					res = 1;
+				} else {
+					target_lockon = 0;
 				}
+				order_v = 0;
+				order_h = 0;
+				// Debug.Log("search found >"+this.transform.Find("sight").GetComponent<FunSearch>().found);
+			}
+			else if (order == "rockon")
+			{
+				if (enemy_flag) {
+					target_lockon = 1;
+					Debug.Log("target_lockon >"+target_lockon);
+				}
+				elapsedTime = 0f;
 				order_v = 0;
 				order_h = 0;
 			}

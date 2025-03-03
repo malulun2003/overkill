@@ -1601,6 +1601,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5896945696455818304, guid: a92fcf9da330d3e439d19301f69cb940, type: 3}
+      propertyPath: angle
+      value: 90
+      objectReference: {fileID: 0}
     - target: {fileID: 6962971501078821657, guid: a92fcf9da330d3e439d19301f69cb940, type: 3}
       propertyPath: m_length
       value: 5.59
@@ -2436,6 +2440,10 @@ PrefabInstance:
     - target: {fileID: 5177070764953119724, guid: a92fcf9da330d3e439d19301f69cb940, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5896945696455818304, guid: a92fcf9da330d3e439d19301f69cb940, type: 3}
+      propertyPath: angle
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 6962971501078821657, guid: a92fcf9da330d3e439d19301f69cb940, type: 3}
       propertyPath: m_length
