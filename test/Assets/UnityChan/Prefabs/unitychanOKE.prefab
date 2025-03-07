@@ -782,6 +782,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   save_num: 0
+  explosionPrefab: {fileID: 5147648062295716349, guid: 43e63458c11c6a34b80a3c4edb6748bc, type: 3}
 --- !u!114 &4068429362057144389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2380,7 +2381,7 @@ SphereCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
@@ -2401,6 +2402,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   angle: 45
+  found: 0
+  enemy_distance: 0
+  enemy_angle: 0
 --- !u!1 &3221418435548083090
 GameObject:
   m_ObjectHideFlags: 0

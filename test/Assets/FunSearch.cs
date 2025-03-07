@@ -8,7 +8,7 @@ public class FunSearch : MonoBehaviour
     public bool found = false;
     public float enemy_distance = 0f;
     public float enemy_angle = 0f;
-
+  
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.tag == "Player") //視界の範囲内の当たり判定

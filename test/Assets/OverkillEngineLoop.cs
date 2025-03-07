@@ -11,15 +11,41 @@ namespace UnityChan
         private float _timeElapsed;   //経過時間
         private int order_count = 0;
 
+        private float life = 100f;
+        private float heat = 0f;
+
         private GameObject player;
         private UnityChanControlScriptWithRgidBody chan;
 
         public int save_num = 0;
         private const string path = "save_temp/";
 
+        [SerializeField] GameObject explosionPrefab;
+
         Panels p = null;
 
         int target_lockon = 0;
+        private float _interval;
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.tag == "bullet")
+            {
+                Debug.Log("BulletLanding!!!"+gameObject.name+", "+other.name);
+                Destroy(other.gameObject);
+                // 爆発エフェクト
+                GameObject explosion =Instantiate(explosionPrefab, other.gameObject.transform.position, Quaternion.identity);
+                Destroy(explosion, 2.0f);
+
+                this.life -= 10f;
+                this.heat += 10f;
+                Debug.Log("life="+this.life);
+                if (this.life <= 0f)
+                {
+                    Destroy(this.gameObject);
+                }
+            }
+        }
 
         public void OnLoadPanel()
         {
@@ -58,6 +84,8 @@ namespace UnityChan
             order_count = 0;
         }
 
+        private Animator anim = null;
+
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
         {
@@ -71,11 +99,16 @@ namespace UnityChan
 
             // SphereColider の　Radius を変える
             this.transform.Find("sight").GetComponent<SphereCollider>().radius = 4f;
+
+            anim = GetComponent<Animator>();
+            Debug.Log("anim="+anim.name);
         }
 
         // Update is called once per frame
         void Update()
         {
+            anim.SetBool("start", true);
+            anim.SetBool("start2", true);
             _timeElapsed += Time.deltaTime;     //時間をカウントする
 
             //各プレイヤーの状態を取得する
@@ -157,7 +190,7 @@ namespace UnityChan
                     }
                     else if (pd.ifroute == 7) {
                         order_count -= 17;
-                    }                    
+                    }
                 }
                 if (pd.name == "end")
                 {
@@ -165,6 +198,8 @@ namespace UnityChan
                 }
                 // Debug.Log("order_count)"+order_count);
                 _timeElapsed = 0;   //経過時間をリセットする
+                
+
             }
         }
     }

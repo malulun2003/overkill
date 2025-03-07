@@ -345,7 +345,7 @@ namespace UnityChan
 			else if (order == "shot")
 			{
 				// Debug.Log("shot?");
-				GameObject newbullet = Instantiate(bulletPrefab, this.transform.position+this.transform.up+this.transform.forward/2, Quaternion.identity); //弾を生成
+				GameObject newbullet = Instantiate(bulletPrefab, this.transform.position+this.transform.up+this.transform.forward*0.8f, Quaternion.identity); //弾を生成
     		    Rigidbody bulletRigidbody = newbullet.GetComponent<Rigidbody>();
 				bulletRigidbody.AddForce(this.transform.forward * bulletSpeed); //キャラクターが向いている方向に弾に力を加える
 				Destroy(newbullet, 10); //10秒後に弾を消す
