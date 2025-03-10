@@ -1,4 +1,4 @@
-﻿//
+//
 // Mecanimのアニメーションデータが、原点で移動しない場合の Rigidbody付きコントローラ
 // サンプル
 // 2014/03/13 N.Kobyasahi
@@ -15,7 +15,6 @@ namespace UnityChan
 
 	public class UnityChanControlScriptWithRgidBody : MonoBehaviour
 	{
-
 		public float animSpeed = 1.5f;				// アニメーション再生速度設定
 		public float lookSmoother = 3.0f;			// a smoothing setting for camera motion
 		public bool useCurves = true;				// Mecanimでカーブ調整を使うか設定する
@@ -86,7 +85,7 @@ namespace UnityChan
 			anim.speed = animSpeed;								// Animatorのモーション再生速度に animSpeedを設定する
 			currentBaseState = anim.GetCurrentAnimatorStateInfo (0);	// 参照用のステート変数にBase Layer (0)の現在のステートを設定する
 			rb.useGravity = true;//ジャンプ中に重力を切るので、それ以外は重力の影響を受けるようにする
-		
+
 			if (order_v != 0) {
 				v = order_v;
 			}
@@ -109,7 +108,7 @@ namespace UnityChan
 				velocity *= backwardSpeed;	// 移動速度を掛ける
 				// Debug.Log("vel2="+bv+", "+velocity+", v="+v+", "+backwardSpeed);
 			}
-		
+
 			if (Input.GetButtonDown ("Jump")) {	// スペースキーを入力したら
 
 				//アニメーションのステートがLocomotionの最中のみジャンプできる
@@ -117,11 +116,11 @@ namespace UnityChan
 					//ステート遷移中でなかったらジャンプできる
 					if (!anim.IsInTransition (0)) {
 						rb.AddForce (Vector3.up * jumpPower, ForceMode.VelocityChange);
-						anim.SetBool ("Jump", true);		// Animatorにジャンプに切り替えるフラグを送る
+						// anim.SetBool ("Jump", true);		// Animatorにジャンプに切り替えるフラグを送る
 					}
 				}
 			}
-		
+
 
 			// 上下のキー入力でキャラクターを移動させる
 			transform.localPosition += velocity * Time.fixedDeltaTime;
@@ -135,7 +134,7 @@ namespace UnityChan
 				if (elapsedAngle < 0) {
 					elapsedAngle = 0;
 				}
-			}	
+			}
 
 			// 以下、Animatorの各ステート中での処理
 			// Locomotion中
@@ -152,7 +151,7 @@ namespace UnityChan
 				cameraObject.SendMessage ("setCameraPositionJumpView");	// ジャンプ中のカメラに変更
 				// ステートがトランジション中でない場合
 				if (!anim.IsInTransition (0)) {
-				
+
 					// 以下、カーブ調整をする場合の処理
 					if (useCurves) {
 						// 以下JUMP00アニメーションについているカーブJumpHeightとGravityControl
@@ -162,7 +161,7 @@ namespace UnityChan
 						float gravityControl = anim.GetFloat ("GravityControl"); 
 						if (gravityControl > 0)
 							rb.useGravity = false;	//ジャンプ中の重力の影響を切る
-										
+
 						// レイキャストをキャラクターのセンターから落とす
 						Ray ray = new Ray (transform.position + Vector3.up, -Vector3.up);
 						RaycastHit hitInfo = new RaycastHit ();
@@ -179,7 +178,7 @@ namespace UnityChan
 						}
 					}
 					// Jump bool値をリセットする（ループしないようにする）				
-					anim.SetBool ("Jump", false);
+					// anim.SetBool ("Jump", false);
 				}
 			}
 			// IDLE中の処理
@@ -191,7 +190,7 @@ namespace UnityChan
 				}
 				// スペースキーを入力したらRest状態になる
 				if (Input.GetButtonDown ("Jump")) {
-					anim.SetBool ("Rest", true);
+					// anim.SetBool ("Rest", true);
 				}
 			}
 			// REST中の処理
@@ -200,7 +199,7 @@ namespace UnityChan
 				//cameraObject.SendMessage("setCameraPositionFrontView");		// カメラを正面に切り替える
 				// ステートが遷移中でない場合、Rest bool値をリセットする（ループしないようにする）
 				if (!anim.IsInTransition (0)) {
-					anim.SetBool ("Rest", false);
+					// anim.SetBool ("Rest", false);
 				}
 			}
 		}
@@ -276,12 +275,16 @@ namespace UnityChan
 				if (param < 0)
 				{
 					order_v = -1;
+					anim.SetTrigger("back_t");
 				} else
 				{
 					order_v = 1;
+					anim.SetTrigger("forward_t");
 				}
 				order_h = 0;
 				elapsedTime = Mathf.Abs(param);
+				// anim.SetBool("walk", true);
+
 			}
 			else if (order == "rotation")
 			{
@@ -292,6 +295,7 @@ namespace UnityChan
 				{
 					order_h = 1;
 				}
+				anim.SetTrigger("rot_t");
 				order_v = 0;
 				elapsedTime = Mathf.Abs(param);
 			}
@@ -318,6 +322,7 @@ namespace UnityChan
 					res = 0;
 					elapsedAngle = -1f;
 				}
+				anim.SetTrigger("rot_t");
 			}
 			else if (order == "search")
 			{
@@ -344,15 +349,24 @@ namespace UnityChan
 			}
 			else if (order == "shot")
 			{
-				// Debug.Log("shot?");
-				GameObject newbullet = Instantiate(bulletPrefab, this.transform.position+this.transform.up+this.transform.forward*0.8f, Quaternion.identity); //弾を生成
-    		    Rigidbody bulletRigidbody = newbullet.GetComponent<Rigidbody>();
-				bulletRigidbody.AddForce(this.transform.forward * bulletSpeed); //キャラクターが向いている方向に弾に力を加える
-				Destroy(newbullet, 10); //10秒後に弾を消す
+				// GameObject newbullet = Instantiate(bulletPrefab, this.transform.position+this.transform.up+this.transform.forward*0.8f, Quaternion.identity); //弾を生成
+    		    // Rigidbody bulletRigidbody = newbullet.GetComponent<Rigidbody>();
+				// bulletRigidbody.AddForce(this.transform.forward * bulletSpeed); //キャラクターが向いている方向に弾に力を加える
+				// Destroy(newbullet, 10); //10秒後に弾を消す
 				elapsedTime = 1f;
 				order_v = 0;
 				order_h = 0;
+				anim.SetTrigger("shoot_t");
 			}
+			else if (order == "rand")
+			{
+				elapsedTime = 0f;
+				res = 0;
+				if (Random.Range(0, 2) == 0) {
+					res = 1;
+				}
+			}
+			
 			return (elapsedTime, res);
 		}
 	}

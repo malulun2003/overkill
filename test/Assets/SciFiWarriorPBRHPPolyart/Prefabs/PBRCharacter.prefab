@@ -2851,10 +2851,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.39
-  m_Height: 2.73
+  m_Radius: 0.46
+  m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 1.4, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &5669734011951965734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2943,7 +2943,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 3.1
+  m_Radius: 8
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7668703988181993635
 MonoBehaviour:
@@ -2957,7 +2957,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53a424395ccedf7418f3f46b24d3a0fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  angle: 45
+  angle: 90
   found: 0
   enemy_distance: 0
   enemy_angle: 0

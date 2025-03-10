@@ -11,25 +11,25 @@ namespace UnityChan
         private float _timeElapsed;   //経過時間
         private int order_count = 0;
 
-        private float life = 100f;
+        private float life = 1f;
         private float heat = 0f;
 
         private GameObject player;
         private UnityChanControlScriptWithRgidBody chan;
 
-        public int save_num = 0;
+        public int save_num = 1;
         private const string path = "save_temp/";
 
         [SerializeField] GameObject explosionPrefab;
 
         Panels p = null;
 
-        int target_lockon = 0;
-        private float _interval;
+        // int target_lockon = 0;
+        // private float _interval;
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.tag == "bullet")
+            if (other.gameObject.tag == "bullet" && this.life > 0f)
             {
                 Debug.Log("BulletLanding!!!"+gameObject.name+", "+other.name);
                 Destroy(other.gameObject);
@@ -37,20 +37,33 @@ namespace UnityChan
                 GameObject explosion =Instantiate(explosionPrefab, other.gameObject.transform.position, Quaternion.identity);
                 Destroy(explosion, 2.0f);
 
-                this.life -= 10f;
-                this.heat += 10f;
+                this.life -= 0.1f;
+                this.heat += 0.1f;
                 Debug.Log("life="+this.life);
+                UpdateGage(life, heat);
                 if (this.life <= 0f)
                 {
-                    Destroy(this.gameObject);
+                    anim.SetTrigger("dead_t");
+                    Destroy(this.gameObject, 3);
                 }
             }
         }
 
-        public void OnLoadPanel()
+        public GameObject gage;
+
+        private void UpdateGage(float life, float heat)
         {
+            var lifegage = gage.transform.Find("LifeGage");
+            // var lifegage = gage.GetComponent<UnityEngine.UI.Image>();
+            Debug.Log("lifegage="+lifegage.GetComponent<UnityEngine.UI.Image>().rectTransform.sizeDelta);
+            Debug.Log("name="+lifegage.name+", life="+life);
+            lifegage.GetComponent<UnityEngine.UI.Image>().rectTransform.sizeDelta = new Vector2((int)(life*100), 20);
+        }
+
+        public void OnLoadPanel()
+        {            
             var fname = path + save_num.ToString().PadLeft(4, '0') + ".sav";
-            Debug.Log("OnLoadPanel"+this.name+", "+fname);
+            Debug.Log("OnLoadPanel"+this.name+", "+fname+", num="+save_num);            
             if (File.Exists(fname))
             {
                 // バイナリ形式でデシリアライズ
@@ -98,17 +111,18 @@ namespace UnityChan
             // Debug.Log(player.tag);
 
             // SphereColider の　Radius を変える
-            this.transform.Find("sight").GetComponent<SphereCollider>().radius = 4f;
+            // this.transform.Find("sight").GetComponent<SphereCollider>().radius = 4f;
 
             anim = GetComponent<Animator>();
             Debug.Log("anim="+anim.name);
+            // anim.SetBool("walk", true);
+
+            UpdateGage(life, heat);
         }
 
         // Update is called once per frame
         void Update()
         {
-            anim.SetBool("start", true);
-            anim.SetBool("start2", true);
             _timeElapsed += Time.deltaTime;     //時間をカウントする
 
             //各プレイヤーの状態を取得する
@@ -162,7 +176,7 @@ namespace UnityChan
                     }
                     else if (pd.next == 6) {
                         order_count -= 1;
-                    }
+                    }                    
                     else if (pd.next == 7) {
                         order_count -= 17;
                     }
@@ -198,8 +212,6 @@ namespace UnityChan
                 }
                 // Debug.Log("order_count)"+order_count);
                 _timeElapsed = 0;   //経過時間をリセットする
-                
-
             }
         }
     }

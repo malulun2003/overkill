@@ -8,6 +8,7 @@ public enum OKtype
     start,
     end,
     search,
+    rand,
 }
 
 // public enum OKdir

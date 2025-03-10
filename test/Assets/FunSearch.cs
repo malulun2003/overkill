@@ -17,9 +17,9 @@ public class FunSearch : MonoBehaviour
             //視界の角度内に収まっているか
             Vector3 posDelta = other.transform.position - this.transform.position;
             float target_angle = Vector3.SignedAngle(this.transform.forward, posDelta, Vector3.up);
-            // Debug.Log("target_angle="+target_angle);
+            Debug.Log("target_angle="+target_angle+", "+angle);
 
-            if (Mathf.Abs(target_angle)/2 < angle) //target_angleがangleに収まっているかどうか
+            if (Mathf.Abs(target_angle) < angle/2) //target_angleがangleに収まっているかどうか
             {
                 // if(Physics.Raycast(this.transform.position, posDelta, out RaycastHit hit)) //Rayを使用してtargetに当たっているか判別
                 // {
