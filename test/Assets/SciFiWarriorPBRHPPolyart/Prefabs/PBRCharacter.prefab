@@ -2752,7 +2752,6 @@ GameObject:
   - component: {fileID: 4996002120116941556}
   - component: {fileID: 5519143378200422971}
   - component: {fileID: 5669734011951965734}
-  - component: {fileID: 7173399776855860183}
   m_Layer: 0
   m_Name: PBRCharacter
   m_TagString: Untagged
@@ -2868,29 +2867,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   save_num: 0
-  explosionPrefab: {fileID: 5147648062295716349, guid: 43e63458c11c6a34b80a3c4edb6748bc, type: 3}
---- !u!114 &7173399776855860183
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2836004475591695743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9001bcbd91e76437cb0f52f12764f2f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animSpeed: 1.5
-  lookSmoother: 3
-  useCurves: 1
-  useCurvesHeight: 0.5
-  bulletSpeed: 100
-  bulletPrefab: {fileID: 3530864826327523949, guid: 546c58120782f3e4d845c7fe8905c19e, type: 3}
+  hitPrefab: {fileID: 5147648062295716349, guid: 43e63458c11c6a34b80a3c4edb6748bc, type: 3}
+  deadPrefab: {fileID: 1007127540951276732, guid: 3ace37360f306cb4aac03640550fa9ef, type: 3}
+  bulletPrefab: {fileID: 7226498818186665862, guid: d5c3a1f947c236a46b10655292d5c17e, type: 3}
+  bulletSpeed: 200
+  gage: {fileID: 0}
   forwardSpeed: 1.5
   backwardSpeed: 1
   rotateSpeed: 1
-  jumpPower: 1
 --- !u!1 &4621438663832455384
 GameObject:
   m_ObjectHideFlags: 0

@@ -21,8 +21,8 @@ public class StateMachineBehaviourSample : StateMachineBehaviour {
         // Debug.Log($"Idle_B再生中"+animator.gameObject.name);
         // Debug.Log("Idle_ AnimateStateInfo : " + stateInfo.normalizedTime.ToString());
         var go = animator.gameObject;
-        var bulletPrefab = go.GetComponent<UnityChan.UnityChanControlScriptWithRgidBody>().bulletPrefab;
-        var bulletSpeed = go.GetComponent<UnityChan.UnityChanControlScriptWithRgidBody>().bulletSpeed;
+        var bulletPrefab = go.GetComponent<OverKillEngine.OverkillEngineLoop>().bulletPrefab;
+        var bulletSpeed = go.GetComponent<OverKillEngine.OverkillEngineLoop>().bulletSpeed;
         if (stateInfo.normalizedTime >= 0.65f && !act) {
             GameObject newbullet = Instantiate(bulletPrefab, go.transform.position+go.transform.up*1.65f+go.transform.forward*1.5f, Quaternion.identity); //弾を生成
             Rigidbody bulletRigidbody = newbullet.GetComponent<Rigidbody>();

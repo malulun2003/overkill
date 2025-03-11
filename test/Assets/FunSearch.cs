@@ -17,7 +17,7 @@ public class FunSearch : MonoBehaviour
             //視界の角度内に収まっているか
             Vector3 posDelta = other.transform.position - this.transform.position;
             float target_angle = Vector3.SignedAngle(this.transform.forward, posDelta, Vector3.up);
-            Debug.Log("target_angle="+target_angle+", "+angle);
+            // Debug.Log("target_angle="+target_angle+", "+angle);
 
             if (Mathf.Abs(target_angle) < angle/2) //target_angleがangleに収まっているかどうか
             {
@@ -29,18 +29,19 @@ public class FunSearch : MonoBehaviour
                 //     }
                 // }
                 // Debug.Log("range of view)"+target_angle);
-                if (!found)
-                {
-                    Debug.Log("sight angle enter");
-                }
+
+                // if (!found)
+                // {
+                //     Debug.Log("sight angle enter");
+                // }
                 enemy_distance = posDelta.magnitude;
                 enemy_angle = target_angle;
                 found = true;
             } else {
-                if (found)
-                {
-                    Debug.Log("sight angle exit");
-                }
+                // if (found)
+                // {
+                //     Debug.Log("sight angle exit");
+                // }
                 found = false;
             }
         }
@@ -49,6 +50,6 @@ public class FunSearch : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         found = false;
-        Debug.Log("sight dis exit");
+        // Debug.Log("sight dis exit");
     }
 }
