@@ -986,6 +986,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 4991904679591142691, guid: f432554f564e69242897607d34218939, type: 3}
+      propertyPath: m_Radius
+      value: 4.59
+      objectReference: {fileID: 0}
     - target: {fileID: 5669734011951965734, guid: f432554f564e69242897607d34218939, type: 3}
       propertyPath: gage
       value: 
@@ -1617,6 +1621,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8209650962680244880, guid: 0e4c72b180171204e892e2962b9efa5a, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8230069077645491788, guid: 0e4c72b180171204e892e2962b9efa5a, type: 3}
+      propertyPath: m_PresetInfoIsWorld
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8269081814089937105, guid: 0e4c72b180171204e892e2962b9efa5a, type: 3}
@@ -3096,6 +3104,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 4991904679591142691, guid: f432554f564e69242897607d34218939, type: 3}
+      propertyPath: m_Radius
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 5669734011951965734, guid: f432554f564e69242897607d34218939, type: 3}
       propertyPath: gage
       value: 
@@ -3107,6 +3119,10 @@ PrefabInstance:
     - target: {fileID: 7173399776855860183, guid: f432554f564e69242897607d34218939, type: 3}
       propertyPath: bulletSpeed
       value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7668703988181993635, guid: f432554f564e69242897607d34218939, type: 3}
+      propertyPath: angle
+      value: 150
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
