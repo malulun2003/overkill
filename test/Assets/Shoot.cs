@@ -1,7 +1,7 @@
 using UnityEngine;
 
 //StateMachineBehaviourを継承
-public class StateMachineBehaviourSample : StateMachineBehaviour {
+public class ShootStateMachine : StateMachineBehaviour {
 
     private bool act = false;
 
@@ -25,6 +25,7 @@ public class StateMachineBehaviourSample : StateMachineBehaviour {
         var bulletSpeed = go.GetComponent<OverKillEngine.OverkillEngineLoop>().bulletSpeed;
         if (stateInfo.normalizedTime >= 0.65f && !act) {
             GameObject newbullet = Instantiate(bulletPrefab, go.transform.position+go.transform.up*1.65f+go.transform.forward*1.5f, Quaternion.identity); //弾を生成
+            newbullet.transform.rotation = go.transform.rotation;
             Rigidbody bulletRigidbody = newbullet.GetComponent<Rigidbody>();
             bulletRigidbody.AddForce(go.transform.forward * bulletSpeed); //キャラクターが向いている方向に弾に力を加える
             Destroy(newbullet, 10); //10秒後に弾を消す

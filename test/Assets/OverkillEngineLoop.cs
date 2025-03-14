@@ -144,7 +144,13 @@ namespace OverKillEngine
         private float order_v = 0;
         private float order_h = 0;
         private float elapsedAngle = -1f;
+        private bool caution = false;
 
+        public void Caution()
+        {
+            Debug.Log("Caution");
+            caution = true;
+        }
 
         void FixedUpdate()
         {
@@ -268,6 +274,7 @@ namespace OverKillEngine
                 // Debug.Log("order_count)"+order_count);
                 _timeElapsed = 0;   //経過時間をリセットする
             }
+            caution = false;
         }
 
 		private float enemy_relative_angle = 0f;
@@ -278,24 +285,6 @@ namespace OverKillEngine
 		{
 			int res = 0;
 			float elapsedTime = 0f;
-
-			// foreach (GameObject p in players)
-            // {
-            //     // 自分の場合
-            //     if (p == player)
-            //     {
-            //         continue;
-            //     }
-            //     // Debug.Log("2) "+p.name+" "+player.name);
-	 	    //    	Vector3 targetPos = p.transform.position;
-    	    // 	Vector3 playerPos = player.transform.position;
-		    //     /* ターゲットとプレイヤーの距離を取得 */
-        	// 	enemy_distance = Vector3.Distance(targetPos, playerPos);
-            //     // Debug.Log("DIS) "+p.name+" > "+enemy_distance);
-			// 	/* ターゲットとプレイヤーの相対角度を計算する */
-			// 	enemy_relative_angle = Vector3.Angle(targetPos - playerPos, player.transform.forward);
-			// 	// Debug.Log("ANGLE) "+p.name+" > "+enemy_relative_angle);
-            // }
 
 			// enemy_distance = this.transform.Find("sight").GetComponent<FunSearch>().enemy_distance;
 			enemy_relative_angle = this.transform.Find("sight").GetComponent<FunSearch>().enemy_angle;
@@ -327,8 +316,6 @@ namespace OverKillEngine
 				}
 				order_h = 0;
 				elapsedTime = Mathf.Abs(param);
-				// anim.SetBool("walk", true);
-
 			}
 			else if (order == "rotation")
 			{
@@ -343,6 +330,13 @@ namespace OverKillEngine
 				order_v = 0;
 				elapsedTime = Mathf.Abs(param);
 			}
+            else if (order == "avoidance")
+            {
+                Debug.Log("jump!!!!!!!!!!!!!!!!!!!");
+                anim.SetTrigger("jump");
+                // this.GetComponent<Rigidbody>().AddForce(transform.right * 20, ForceMode.Impulse);
+                elapsedTime = 2f;
+            }
 			else if (order == "rot_enemy")
 			{
 				// Debug.Log("rot_enemy) dist="+enemy_distance+", angle="+enemy_relative_angle+", "+target_lockon+", "+elapsedAngle);
@@ -368,7 +362,7 @@ namespace OverKillEngine
 				}
 				anim.SetTrigger("rot_t");
 			}
-			else if (order == "search")
+			else if (order == "s_enemy")
 			{
 				// Debug.Log("search) dist="+enemy_distance+", angle="+enemy_relative_angle+", "+enemy_flag);
 				if (enemy_flag) {
@@ -380,6 +374,14 @@ namespace OverKillEngine
 				order_v = 0;
 				order_h = 0;
 				// Debug.Log("search found >"+this.transform.Find("sight").GetComponent<FunSearch>().found);
+			}
+			else if (order == "s_bullet")
+			{
+                // 弾が飛来中！
+                if (caution) {
+                    res = 1;
+                    Debug.Log("LLLLLLLLLLLLLLLLLLLLLLLLL");
+                }
 			}
 			else if (order == "rockon")
 			{
@@ -393,10 +395,6 @@ namespace OverKillEngine
 			}
 			else if (order == "shot")
 			{
-				// GameObject newbullet = Instantiate(bulletPrefab, this.transform.position+this.transform.up+this.transform.forward*0.8f, Quaternion.identity); //弾を生成
-    		    // Rigidbody bulletRigidbody = newbullet.GetComponent<Rigidbody>();
-				// bulletRigidbody.AddForce(this.transform.forward * bulletSpeed); //キャラクターが向いている方向に弾に力を加える
-				// Destroy(newbullet, 10); //10秒後に弾を消す
 				elapsedTime = 1f;
 				order_v = 0;
 				order_h = 0;

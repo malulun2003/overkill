@@ -20,6 +20,21 @@ namespace Bullet
             rb.useGravity = false; //重力を無効にする
         }
 
+        void Update()
+        {
+            RaycastHit hit;
+            Debug.Log("transform="+transform.position);
+            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit))
+            {
+                // Debug.Log("Tag: " + hit.transform.gameObject.tag);
+                // Debug.Log("name: " + hit.transform.gameObject.name);
+                if (hit.transform.gameObject.CompareTag("Player")) //タグがEnemyのオブジェクトと��突した場合
+                {
+                    hit.transform.gameObject.GetComponent<OverKillEngine.OverkillEngineLoop>().Caution();
+                }
+            }
+        }
+
         void OnTriggerEnter(Collider collision)
         {
             if (collision.gameObject.CompareTag("Block")) //タグがBlockのオブジェクトと衝突した場合
