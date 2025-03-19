@@ -41,7 +41,7 @@ namespace OverKillEngine
                 GameObject explosion =Instantiate(hitPrefab, other.gameObject.transform.position, Quaternion.identity);
                 Destroy(explosion, 2.0f);
 
-                this.life -= 0.5f;
+                this.life -= 0.1f;
                 this.heat += 0.1f;
                 // Debug.Log("life="+this.life);
                 UpdateGage(life, heat);
@@ -294,7 +294,7 @@ namespace OverKillEngine
 				target_lockon = 0;
 			}
 
-			// Debug.Log(order+", "+param);
+			Debug.Log(order+", "+param);
 			if (order == "start")
 			{
 				elapsedTime = 0f;

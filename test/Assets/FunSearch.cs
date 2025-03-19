@@ -36,6 +36,7 @@ public class FunSearch : MonoBehaviour
                 // }
                 enemy_distance = posDelta.magnitude;
                 enemy_angle = target_angle;
+                Debug.Log("enemy_angle="+enemy_angle+", enemy_distance="+enemy_distance);
                 found = true;
             } else {
                 // if (found)
