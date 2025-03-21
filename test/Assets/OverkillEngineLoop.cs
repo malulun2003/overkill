@@ -136,13 +136,17 @@ namespace OverKillEngine
 		// 前進速度
 		public float forwardSpeed = 0.5f;
 		// 後退速度
-		public float backwardSpeed = 0.5f;
+		public float backwardSpeed = 0.2f;
+        // 左右速度
+        public float horizontalSpeed = 0.3f;
         // 旋回速度
 		public float rotateSpeed = 1.0f;
 
-        private Vector3 velocity;
+        private Vector3 velocity_v;
+        private Vector3 velocity_h;
         private float order_v = 0;
         private float order_h = 0;
+        private float order_rot = 0;
         private float elapsedAngle = -1f;
         private bool caution = false;
 
@@ -156,25 +160,41 @@ namespace OverKillEngine
         {
             float v = 0f;
             float h = 0f;
+            float rot = 0f;
 
             if (order_v != 0) {
                 v = order_v;
             }
-            if (order_h!= 0) {
+            if (order_h != 0) {
                 h = order_h;
             }
-            velocity = transform.TransformDirection (new Vector3 (0, 0, v));
-            if (v > 0) {
-                velocity *= forwardSpeed;
-            } else if (v < 0) {
-                velocity *= backwardSpeed;
+            if (order_rot != 0) {
+                rot = order_rot;
             }
-            transform.localPosition += velocity * Time.fixedDeltaTime;
-            transform.Rotate (0, h * rotateSpeed, 0);
+
+            // 前後移動
+            velocity_v = transform.TransformDirection(new Vector3 (0, 0, v));
+            if (v > 0) {
+                velocity_v *= forwardSpeed;
+            } else if (v < 0) {
+                velocity_v *= backwardSpeed;
+            }
+            transform.localPosition += velocity_v * Time.fixedDeltaTime;
+
+            // 左右移動
+            velocity_h = transform.TransformDirection(new Vector3 (h, 0, 0));
+            if (h > 0) {
+                velocity_h *= horizontalSpeed;
+            } else if (h < 0) {
+                velocity_h *= horizontalSpeed;
+            }
+            transform.localPosition += velocity_h * Time.fixedDeltaTime;
+
             // 設定角度分旋回したかを計算する
+            transform.Rotate (0, rot * rotateSpeed, 0);
 			if (Mathf.Abs(elapsedAngle) > 0 && elapsedAngle != -1)
 			{
-				elapsedAngle -= Mathf.Abs(h * rotateSpeed);
+				elapsedAngle -= Mathf.Abs(rot * rotateSpeed);
 				if (elapsedAngle < 0) {
 					elapsedAngle = 0;
 				}
@@ -273,6 +293,7 @@ namespace OverKillEngine
                 }
                 // Debug.Log("order_count)"+order_count);
                 _timeElapsed = 0;   //経過時間をリセットする
+                Debug.Log("timeElapsed:"+_timeElapsed+" span:"+_repeatSpan);
             }
             caution = false;
         }
@@ -303,8 +324,9 @@ namespace OverKillEngine
 			{
 				elapsedTime = 0f;
 			}
-			else if (order == "forward" || order == "move")
+			else if (order == "forward" || order == "move_fb")
 			{
+                Debug.Log(order+", "+param);
 				if (param < 0)
 				{
 					order_v = -1;
@@ -314,20 +336,36 @@ namespace OverKillEngine
 					order_v = 1;
 					anim.SetTrigger("forward_t");
 				}
-				order_h = 0;
+                order_h = 0;
+				elapsedTime = Mathf.Abs(param);
+			}
+			else if (order == "move_lr")
+			{
+                Debug.Log(order+", "+param);
+				if (param < 0)
+				{
+					order_h = -1;
+					anim.SetTrigger("right_t");
+				} else
+				{
+					order_h = 1;
+					anim.SetTrigger("left_t");
+				}
+                order_v = 0;
 				elapsedTime = Mathf.Abs(param);
 			}
 			else if (order == "rotation")
 			{
 				if (param < 0)
 				{
-					order_h = -1;
+					order_rot = -1;
 				} else
 				{
-					order_h = 1;
+					order_rot = 1;
 				}
 				anim.SetTrigger("rot_t");
 				order_v = 0;
+				order_h = 0;
 				elapsedTime = Mathf.Abs(param);
 			}
             else if (order == "avoidance")
@@ -345,9 +383,9 @@ namespace OverKillEngine
 					// ターゲットの方向に回転する
 					// Debug.Log("rot_enemy2) dist="+enemy_distance+", angle="+enemy_relative_angle);
 					if (enemy_relative_angle < 0) {
-						order_h = -1;
+						order_rot = -1;
 					} else {
-						order_h = 1;
+						order_rot = 1;
 					}
 					elapsedTime = 0f;
 					elapsedAngle = Mathf.Abs(enemy_relative_angle);
@@ -372,7 +410,7 @@ namespace OverKillEngine
 					target_lockon = 0;
 				}
 				order_v = 0;
-				order_h = 0;
+				order_rot = 0;
 				// Debug.Log("search found >"+this.transform.Find("sight").GetComponent<FunSearch>().found);
 			}
 			else if (order == "s_bullet")
@@ -391,13 +429,13 @@ namespace OverKillEngine
 				}
 				elapsedTime = 0f;
 				order_v = 0;
-				order_h = 0;
+				order_rot = 0;
 			}
 			else if (order == "shot")
 			{
 				elapsedTime = 1f;
 				order_v = 0;
-				order_h = 0;
+				order_rot = 0;
 				anim.SetTrigger("shoot_t");
 			}
 			else if (order == "rand")
@@ -408,7 +446,7 @@ namespace OverKillEngine
 					res = 1;
 				}
 			}
-			
+			Debug.Log("elapsedTime:"+elapsedTime);
 			return (elapsedTime, res);
 		}
 
